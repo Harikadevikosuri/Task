@@ -12,7 +12,7 @@ phases:
       - echo Logging in to Amazon ECR...
       - aws --version
 
-      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin 204998944728.dkr.ecr.ap-south-1.amazonaws.com
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin 204998944728.dkr.ecr.ap-south-1.amazonaws.com/task
 
       - aws ecr describe-repositories --region $AWS_REGION
 
@@ -24,10 +24,12 @@ phases:
 
   build:
     commands:
+    - echo Building Docker image
       - docker build -t $IMAGE_URI .
 
   post_build:
     commands:
+    - echo Pushing Docker image
       - docker push $IMAGE_URI
 
       - printf '[{"name":"%s","imageUri":"%s"}]' $CONTAINER_NAME $IMAGE_URI > imagedefinitions.json
